@@ -2,29 +2,29 @@
 <html>
   <head>
     <title>Welcome to the Survey!</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
-        <script src="jspsych-4.3/jspsych.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jspsych-4.3/jspsych.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-text.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-survey-text.js"></script>
-        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script> 
-        <script src="FileSaver.js-master/FileSaver.js"></script> 
-        <!-- use the plugin for multiple trial elemets 
+        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script>
+        <script src="FileSaver.js-master/FileSaver.js"></script>
+        <!-- use the plugin for multiple trial elemets
         <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
         -->
-        <link href="jspsych-4.3/css/jspsych.css" rel="stylesheet" type="text/css"</link> 
+        <link href="jspsych-4.3/css/jspsych.css" rel="stylesheet" type="text/css"</link>
   </head>
   <style>
   </style>
   <body>
 
 
-  <div id="indicator"></div> 
+  <div id="indicator"></div>
       <script>
       var indicator = document.getElementById("indicator");
         /* define instructions block */
         var instructions_block = {
             type: "text",
-            text: "<p style='font-size:30px; text-align:center'>Welcome to the experiment!</p>" + 
+            text: "<p style='font-size:30px; text-align:center'>Welcome to the experiment!</p>" +
                 "<p>There are 160 trials in this experiment. Each trial will consist of an image, a statement, and your response. The statement may be in a natural or mathematical language. The image will be shown for only 1/5 of a second. You will have 5 seconds to read a statement and judge <strong>whether the statement accurately describes the image</strong>.</p>" +
             "<p>If the statement <strong>accurately</strong> describes the image, press the letter <strong>f</strong> on the keyboard.</p>" +
             "<p>If the statement <strong>does not</strong> accurately describe the image, press the letter <strong>j</strong> on the keyboard.</p>" +
@@ -37,7 +37,7 @@
         var experiment = [];
         experiment.push(instructions_block);
 
-        var response = "<p style='font-size:60px; text-align:center; margin-top:50%'>?</p>" + 
+        var response = "<p style='font-size:60px; text-align:center; margin-top:50%'>?</p>" +
             "<p style='font-size:20px; text-align:center'>Press <strong>f</strong> for yes, <strong>j</strong> for no.</p>";
 
         var images = [];
@@ -49,12 +49,12 @@
         for(var i=0; i<winner.length;i++){
             for(var j=0; j<ratios.length;j++){
                 for(var k=0; k<pix.length;k++){
-                    imgstring = "stimuli/fig2_" + winner[i]+ratios[j]+pix[k]+".png";
+                    imgstring = "Stimuli_Negation1/fig2_" + winner[i]+ratios[j]+pix[k]+".png";
                     images.push(imgstring);
                 }
             }
         }
-            
+
         var sentences1 = ["A > B", "A < B"];
         var sentences2 = ["B < A", "B > A"];
         var sentences3 = ["A is taller than B.", "A is shorter than B."];
@@ -65,7 +65,7 @@
         var initlist3 = [];
         var initlist4 = [];
 
-        function updateLoadedCount(nLoaded) { 
+        function updateLoadedCount(nLoaded) {
             var percentcomplete = nLoaded / images.length * 100;
             console.log('Loaded '+percentcomplete+'% of experiment');
         };
@@ -137,7 +137,7 @@
         var blocklist = [initlist1, initlist2, initlist3, initlist4];
 
         blocklist = jsPsych.randomization.repeat(blocklist, 1);
-    
+
 
         var blank_block = {
             type: 'single-stim',
@@ -148,7 +148,7 @@
             timing_post_trial: 0, // no gap between fixation and image
             is_html: true
         };
-        
+
         var fix_block = {
             type: 'single-stim',
             stimuli: ['<p style="font-size:128px; text-align:center; margin-top:50%">+</p>'],
@@ -192,7 +192,7 @@
 
                 var response_block = {
                     type: 'single-stim',
-                    stimuli: '<p style="font-size:57px; text-align:center; margin-top:50%">' + blocklist[x][i][1] + '</p>' + 
+                    stimuli: '<p style="font-size:57px; text-align:center; margin-top:50%">' + blocklist[x][i][1] + '</p>' +
                             "<p style='font-size:20px; text-align:center'>Press <strong>f</strong> for yes, <strong>j</strong> for no.</p>",
                     choices: ['f','j'],
                     timing_response: 5000,
@@ -224,7 +224,7 @@
         }
 
 
-          
+
     /* define survey block */
     var survey_block = {
         type: 'survey-text',
@@ -241,7 +241,7 @@
     };
 
     experiment.push(finish_block)
-          
+
     function subjcheck(subj){
         if(subj[0] != "s"){
             subj = "s" + subj;
@@ -259,24 +259,24 @@
 
 
     /* start the experiment */
-    /* embedded in "startExperiment" function for preloadImages */ 
+    /* embedded in "startExperiment" function for preloadImages */
     function startExperiment(){
         var subj = prompt("Please enter Subject ID", "s999");
         subj = subjcheck(subj);
         jsPsych.data.addProperties({subject: subj});
         jsPsych.init({
-            experiment_structure: experiment, 
+            experiment_structure: experiment,
             /* the below prints the data to the screen */
             on_finish: function() {
                 //jsPsych.data.displayData('csv');
                 var dat = jsPsych.data.dataAsCSV();
                 var blob = new Blob([dat], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, subj + ".csv");
-             } 
+             }
         });
     }
-          
+
       </script>
-      
+
   </body>
 </html>

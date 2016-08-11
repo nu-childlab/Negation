@@ -2,17 +2,17 @@
 <html>
     <head>
         <title>My experiment</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
-        <script src="jspsych-4.3/jspsych.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jspsych-4.3/jspsych.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-text.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-survey-text.js"></script>
-        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script> 
-        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script> 
-        <script src="FileSaver.js-master/FileSaver.js"></script> 
-        <!-- use the plugin for multiple trial elemets 
+        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script>
+        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
+        <script src="FileSaver.js-master/FileSaver.js"></script>
+        <!-- use the plugin for multiple trial elemets
         <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
         -->
-        <link href="jspsych-4.3/css/jspsych_scaled.css" rel="stylesheet" type="text/css"</link> 
+        <link href="jspsych-4.3/css/jspsych_scaled.css" rel="stylesheet" type="text/css"</link>
     </head>
     <body>
     </body>
@@ -35,12 +35,12 @@
     for(var i=0; i<Apos.length;i++){
         for(var j=0; j<rat1.length;j++){
             for(var k=0; k<rat2.length;k++){
-                imgstring = "Exp2_EN_A_in_context/" + Apos[i]+rat1[j]+"bef_"+rat2[k]+".png";
+                imgstring = "Stimuli_Negation2/" + Apos[i]+rat1[j]+"bef_"+rat2[k]+".png";
                 images.push(imgstring);
             }
         }
     }
-    
+
     var sentences = ["Is A tall?", "Is A short?"];
 
     var initlist = [];
@@ -58,7 +58,7 @@
     initlist = jsPsych.randomization.repeat(initlist, 2);
     var initliststore = initlist.slice();
 /*
-    function randCheck(stimlist) { 
+    function randCheck(stimlist) {
         var sentprev = "";
         var sentnext = "";
         for(i=1; i<stimlist.length; i++){
@@ -96,7 +96,7 @@
                 n = 0
             }
 
-            sent = initlist[n][1]; 
+            sent = initlist[n][1];
 
             //if the current sentence is NOT the same as the previous 2
             if (sent != sentprev1 || sent != sentprev2){
@@ -109,7 +109,7 @@
                 stop = 0;
                 whilecount = 0;
             }
-            whilecount++; 
+            whilecount++;
             if(whilecount >=50){
                 //if it takes 50 tries, it might be impossible at this point
                 initlist = initliststore.slice();
@@ -133,7 +133,7 @@
 */
 
     /* pre-load pictures */
-    function updateLoadedCount(nLoaded) { 
+    function updateLoadedCount(nLoaded) {
         var percentcomplete = nLoaded / images.length * 100;
         console.log('Loaded '+percentcomplete+'% of experiment');
     };
@@ -145,8 +145,8 @@
     /* define instructions block */
     var instructions_block = {
         type: "text",
-        text: "<p style='font-size:30px; text-align:center; margin-top:0%'>Welcome to the experiment!</p>" + 
-            "<p>In this study, you will be presented with a question in the middle of the screen, followed by an image. Your task is to answer the question 'yes' or 'no' based on the picture. After you've read the question, you will press spacebar to see the image.</p>" + 
+        text: "<p style='font-size:30px; text-align:center; margin-top:0%'>Welcome to the experiment!</p>" +
+            "<p>In this study, you will be presented with a question in the middle of the screen, followed by an image. Your task is to answer the question 'yes' or 'no' based on the picture. After you've read the question, you will press spacebar to see the image.</p>" +
             "<p>If the answer is <strong>yes</strong> based on the picture, press the letter <strong>f</strong> on the keyboard.</p>" +
             "<p>If the answer is <strong>no</strong> based on the picture, press the letter <strong>j</strong> on the keyboard.</p>" +
             "<p>Ready? Press any key to begin.</p>"
@@ -172,7 +172,7 @@
         is_html: true
     };
 
-    for(i=0; i<stimlist.length; i++){//DANIEL: If you wanna run a shorter version, then change "stimlist.length" here to some small number, like 2 
+    for(i=0; i<stimlist.length; i++){//DANIEL: If you wanna run a shorter version, then change "stimlist.length" here to some small number, like 2
         var sent_block = {
             type: 'text',
             text: '<p style="font-size:57px; text-align:center; margin-top:70%">' + stimlist[i][1] + '</p>' +
@@ -226,23 +226,23 @@
 
 
     /* start the experiment */
-    /* embedded in "startExperiment" function for preloadImages */ 
+    /* embedded in "startExperiment" function for preloadImages */
     function startExperiment(){
         var subj = prompt("Please enter Subject ID", "s999");
         subj = subjcheck(subj);
         jsPsych.data.addProperties({subject: subj});
         jsPsych.init({
-            experiment_structure: experiment, 
+            experiment_structure: experiment,
             /* the below prints the data to the screen */
             on_finish: function() {
                 //jsPsych.data.displayData('csv');
                 var dat = jsPsych.data.dataAsCSV();
                 var blob = new Blob([dat], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, subj + ".csv");
-             } 
+             }
         });
     }
-    
+
 
     </script>
 </html>

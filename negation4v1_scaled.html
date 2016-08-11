@@ -2,17 +2,17 @@
 <html>
     <head>
         <title>My experiment</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
-        <script src="jspsych-4.3/jspsych.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jspsych-4.3/jspsych.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-text.js"></script>
         <script src="jspsych-4.3/plugins/jspsych-survey-text.js"></script>
-        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script> 
-        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script> 
-        <script src="FileSaver.js-master/FileSaver.js"></script> 
-        <!-- use the plugin for multiple trial elemets 
+        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script>
+        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
+        <script src="FileSaver.js-master/FileSaver.js"></script>
+        <!-- use the plugin for multiple trial elemets
         <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
         -->
-        <link href="jspsych-4.3/css/jspsych_scaled_2.css" rel="stylesheet" type="text/css"</link> 
+        <link href="jspsych-4.3/css/jspsych_scaled_2.css" rel="stylesheet" type="text/css"</link>
     </head>
     <body>
     </body>
@@ -35,12 +35,12 @@
     for(var i=0; i<Apos.length;i++){
         for(var j=0; j<rat1.length;j++){
             for(var k=0; k<rat2.length;k++){
-                imgstring = "Exp3/" + Apos[i]+rat1[j]+"bef_"+rat2[k]+".png";
+                imgstring = "Stimuli_Negation3/" + Apos[i]+rat1[j]+"bef_"+rat2[k]+".png";
                 images.push(imgstring);
             }
         }
     }
-    
+
     var sentencesA1 = ["A is taller than B.", "A is shorter than B."];
     var sentencesA2 = ["B is taller than A.", "B is shorter than A"];
     var sentencesB1 = ["A is less SHORT than B.", "A is less TALL than B."];
@@ -99,7 +99,7 @@
         }
 
     };
-    
+
     function randomizeRW(initlist) {
         var sent = "";
         var sentprev1 = "";
@@ -109,7 +109,7 @@
         var r = initlist.length
         var initlisttemp = initlist.slice();
         var stimlist = [];
-        
+
         //for(r=initlist.length-1; r>=0; r--)
         while(r>0){
             stop = 1;
@@ -119,7 +119,7 @@
                     n = 0
                 }
 
-                sent = initlisttemp[n][1]; 
+                sent = initlisttemp[n][1];
 
                 //if the current sentence is NOT the same as the previous 2
                 if (sent != sentprev1 || sent != sentprev2){
@@ -132,7 +132,7 @@
                     stop = 0;
                     whilecount = 0;
                 }
-                whilecount++; 
+                whilecount++;
                 if(whilecount >=50){
                     //if it takes 50 tries, it might be impossible at this point
                     initlisttemp = initlist.slice();
@@ -150,7 +150,7 @@
         };
         return stimlist;
     }
-    
+
     stimlistA1 = jsPsych.randomization.repeat(initlistA1, 1);
     stimlistA2 = jsPsych.randomization.repeat(initlistA2, 1);
     stimlistB1 = jsPsych.randomization.repeat(initlistB1, 1);
@@ -183,7 +183,7 @@
 
 
     /* pre-load pictures */
-    function updateLoadedCount(nLoaded) { 
+    function updateLoadedCount(nLoaded) {
         var percentcomplete = nLoaded / images.length * 100;
         console.log('Loaded '+percentcomplete+'% of experiment');
     };
@@ -195,8 +195,8 @@
     /* define instructions block */
     var instructions_block = {
         type: "text",
-        text: "<p style='font-size:30px; text-align:center; margin-top:0%'>Welcome to the experiment!</p>" + 
-            "<p>In this study, you will be presented with a sentence in the middle of the screen, followed by an image. Your task is to decide whether the sentence accurately describes the picture.</p>" + 
+        text: "<p style='font-size:30px; text-align:center; margin-top:0%'>Welcome to the experiment!</p>" +
+            "<p>In this study, you will be presented with a sentence in the middle of the screen, followed by an image. Your task is to decide whether the sentence accurately describes the picture.</p>" +
             "<p>If the sentence <strong>accurately</strong> describes the picture, press the letter <strong>f</strong> on the keyboard.</p>" +
             "<p>If the sentence <strong>does not</strong> accurately describe the picture, press the letter <strong>j</strong> on the keyboard.</p>" +
             "<p>Ready? Press any key to begin.</p>"
@@ -309,23 +309,23 @@
 
 
     /* start the experiment */
-    /* embedded in "startExperiment" function for preloadImages */ 
+    /* embedded in "startExperiment" function for preloadImages */
     function startExperiment(){
         var subj = prompt("Please enter Subject ID", "s999");
         subj = subjcheck(subj);
         jsPsych.data.addProperties({subject: subj});
         jsPsych.init({
-            experiment_structure: experiment, 
+            experiment_structure: experiment,
             /* the below prints the data to the screen */
             on_finish: function() {
                 //jsPsych.data.displayData('csv');
                 var dat = jsPsych.data.dataAsCSV();
                 var blob = new Blob([dat], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, subj + ".csv");
-             } 
+             }
         });
     }
-    
+
 
     </script>
 </html>
