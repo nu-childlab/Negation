@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+    <head>
+        <title>My experiment</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
+        <script src="jspsych-4.3/jspsych.js"></script> 
+        <script src="jspsych-4.3/plugins/jspsych-text.js"></script>
+        <script src="jspsych-4.3/plugins/jspsych-survey-text.js"></script>
+        <script src="jspsych-4.3/plugins/jspsych-single-stim.js"></script> 
+        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script> 
+        <script src="FileSaver.js-master/FileSaver.js"></script> 
+        <!-- use the plugin for multiple trial elemets 
+        <script src="jspsych-4.3/plugins/jspsych-multi-stim-multi-response.js"></script>
+        -->
+        <link href="jspsych-4.3/css/jspsych.css" rel="stylesheet" type="text/css"</link> 
+    </head>
+    <body>
+    </body>
+    <script>
+
+    /* define experiment */
+
+    var timeToRespond = 5000;
+
+    var timeToRespondSecs = timeToRespond/1000;
+
+    var ISI = 400;
+
+    var Apos = ["AB_", "BA_"];
+    var rat1 = ["1d2_","3d4_","5d6_","7d8_","9d10_"];
+    var rat2 = ["1d2_3d4","3d4_5d6", "5d6_7d8","7d8_9d10"];
+    var images = [];
+    var imgstring = "";
+
+    for(var i=0; i<Apos.length;i++){
+        for(var j=0; j<rat1.length;j++){
+            for(var k=0; k<rat2.length;k++){
+                imgstring = "Exp3/" + Apos[i]+rat1[j]+"bef_"+rat2[k]+".png";
+                images.push(imgstring);
+            }
+        }
+    }
+    
+    var sentencesA1 = ["A is taller than B.", "A is shorter than B."];
+    var sentencesA2 = ["B is taller than A.", "B is shorter than A"];
+    var sentencesB1 = ["A is more TALL than B.", "A is more SHORT than B."];
+    var sentencesB2 = ["B is more TALL than A.", "B is more SHORT than A."];
+
+    var initlistA1 = [];
+    var initlistA2 = [];
+    var initlistB1 = [];
+    var initlistB2 = [];
+    //for each filename in images, pair it with each sentence and add it to the list.
+    //images.length
+    for(i=0; i<images.length; i++){
+        for(j=0; j<sentencesA1.length; j++){
+            stim = [images[i], sentencesA1[j]];
+            initlistA1.push(stim);
+        }
+
+    };
+
+    for(i=0; i<images.length; i++){
+        for(j=0; j<sentencesA2.length; j++){
+            stim = [images[i], sentencesA2[j]];
+            initlistA2.push(stim);
+        }
+
+    };
+
+    for(i=0; i<images.length; i++){
+        for(j=0; j<sentencesB1.length; j++){
+            stim = [images[i], sentencesB1[j]];
+            initlistB1.push(stim);
+        }
+
+    };
+
+    for(i=0; i<images.length; i++){
+        for(j=0; j<sentencesB2.length; j++){
+            stim = [images[i], sentencesB2[j]];
+            initlistB2.push(stim);
+        }
+
+    };
+    
+    function randomizeRW(initlist) {
+        var sent = "";
+        var sentprev1 = "";
+        var sentprev2 = "";
+        var stop = 1;
+        var whilecount = 0;
+        var r = initlist.length
+        var initlisttemp = initlist.slice();
+        var stimlist = [];
+        
+        //for(r=initlist.length-1; r>=0; r--)
+        while(r>0){
+            stop = 1;
+            while(stop){
+                n = Math.floor((Math.random()*r-1));
+                while(n==-1){
+                    n = 0
+                }
+
+                sent = initlisttemp[n][1]; 
+
+                //if the current sentence is NOT the same as the previous 2
+                if (sent != sentprev1 || sent != sentprev2){
+                    sentprev2 = sentprev1;
+                    sentprev1 = sent;
+                    stimlist.push(initlisttemp[n]);
+                    initlisttemp.splice(n, 1);
+                    r--;
+                    //move the previous sentence values, and add the new one to the list.
+                    stop = 0;
+                    whilecount = 0;
+                }
+                whilecount++; 
+                if(whilecount >=50){
+                    //if it takes 50 tries, it might be impossible at this point
+                    initlisttemp = initlist.slice();
+                    stimlist = [];
+                    r = initlist.length;
+                    sentprev1 = "";
+                    sentprev2 = "";
+                    whilecount = 0;
+                    stop = 0;
+                }
+
+
+          }
+
+        };
+        return stimlist;
+    }
+    
+    stimlistA1 = jsPsych.randomization.repeat(initlistA1, 1);
+    stimlistA2 = jsPsych.randomization.repeat(initlistA2, 1);
+    stimlistB1 = jsPsych.randomization.repeat(initlistB1, 1);
+    stimlistB2 = jsPsych.randomization.repeat(initlistB2, 1);
+
+    blocklist = [];
+    totalblocks = [[stimlistA1, stimlistA2], [stimlistB1, stimlistB2]];
+    totalblocks[0] = jsPsych.randomization.repeat(totalblocks[0], 1);
+    totalblocks[1] = jsPsych.randomization.repeat(totalblocks[1], 1);
+    totalblocks = jsPsych.randomization.repeat(totalblocks, 1);
+    blocklist.push(totalblocks[0][0]);
+    blocklist.push(totalblocks[0][1]);
+    blocklist.push(totalblocks[1][0]);
+    blocklist.push(totalblocks[1][1]);
+
+
+/*
+//Testing block randomization
+    testlist = [[1, 2], [3, 4]];
+    testlist[0] = jsPsych.randomization.repeat(testlist[0], 1);
+    testlist[1] = jsPsych.randomization.repeat(testlist[1], 1);
+    testlist = jsPsych.randomization.repeat(testlist, 1);
+    alert(testlist[0])
+    blocklist.push(testlist[0][0]);
+    blocklist.push(testlist[0][1]);
+    blocklist.push(testlist[1][0]);
+    blocklist.push(testlist[1][1]);
+    alert(blocklist)
+*/
+
+
+    /* pre-load pictures */
+    function updateLoadedCount(nLoaded) { 
+        var percentcomplete = nLoaded / images.length * 100;
+        console.log('Loaded '+percentcomplete+'% of experiment');
+    };
+
+    /*Arguments: a list of image names, what function to run after ALL images are loaded, what function to run after EACH image is loaded.*/
+    jsPsych.preloadImages(images, function(){ startExperiment(); }, function(nLoaded){ updateLoadedCount(nLoaded); });
+
+
+    /* define instructions block */
+    var instructions_block = {
+        type: "text",
+        text: "<p>Welcome to the experiment!</p>" + 
+            "<p>In this study, you will be presented with a sentence in the middle of the screen, followed by an image. Your task is to decide whether the sentence accurately describes the picture.</p>" + 
+            "<p>If the sentence <strong>accurately</strong> describes the picture, press the letter <strong>f</strong> on the keyboard.</p>" +
+            "<p>If the sentence <strong>does not</strong> accurately describe the picture, press the letter <strong>j</strong> on the keyboard.</p>" +
+            "<p>Ready? Press any key to begin.</p>"
+        /* gives the subject some time after the instructions before expt starts */
+        // timing_post_trial: 2000
+    };
+
+    var experiment = [];
+    experiment.push(instructions_block);
+
+    //var sentPresent = "<p align='center' style='font-size:15px;'>press <strong>f</strong> for yes, <strong>j</strong> for no"
+
+    var response = "</p><p align='center' style='font-size:15px;'>press <strong>f</strong> for yes, <strong>j</strong> for no";
+
+
+    var fix_block = {
+        type: 'single-stim',
+        stimuli: ['<p style="font-size:128px; text-align:center; margin-top:50%">+</p>'],
+        timing_response: 1000, // how long to show the fixation for in ms
+        response_ends_trial: false,
+        choices: 'none', // no valid keys
+        timing_post_trial: 0, // no gap between fixation and image
+        is_html: true
+    };
+
+    var break_block = {
+        type: 'text',
+        text: ['<p style="text-align:center; margin-top:50%">Take a short break? Press spacebar when you are ready to continue.</p>'],
+        cont_key: ['space'],
+        is_html: true
+    };
+
+    for(b=0; b<blocklist.length;b++){
+        var stimlist = blocklist[b]
+        for(i=0; i<2; i++){
+            var sent_block = {
+                type: 'text',
+                text: '<p style="font-size:57px; text-align:center; margin-top:50%">' + stimlist[i][1] + '</p>' +
+            "<p><p align='center' style='font-size:15px;'>Press spacebar to continue</p>",
+                cont_key: ['space'],
+                is_html: true
+            };
+
+            var dat = stimlist[i][0].substr(5, 18)
+            dat = dat.split("_");
+            if(dat[4] == "9d1"){
+                dat[4] = "9d10";
+            }
+
+            var stim_block = {
+                type: 'single-stim',
+                stimuli: [stimlist[i][0]],
+                prompt: response,
+                choices: ['f','j'],
+                timing_response: 5000,
+                data: { sentence: stimlist[i][1], Aposition: dat[0], ratio1: dat[1], ratio2: dat[3], ratio3: dat[4] }
+            };
+
+            experiment.push(sent_block);
+            experiment.push(fix_block);
+            experiment.push(stim_block);
+
+        };
+        if(b<3){
+            experiment.push(break_block);
+        }
+
+    }
+
+    function subjcheck(subj){
+        if(subj[0] != "s"){
+            subj = "s" + subj;
+        }
+        nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+        for(i = 1; i < subj.length; i++) {
+            if(!(nums.indexOf(subj[i]) > -1)) {
+                nsubj = prompt("Subject ID must consist of an s followed by only numbers. Please enter a valid subject ID:", "s999");
+                return subjcheck(nsubj);
+            }
+        }
+        return subj;
+
+    }
+
+    var finish_block = {
+        type: 'text',
+        text: ["<p style='text-align:center; margin-top:50%'>That's all! Thanks for participating!</p>"],
+        cont_key: ['1'],
+        is_html: true
+    };
+
+    experiment.push(finish_block)
+
+
+    /* start the experiment */
+    /* embedded in "startExperiment" function for preloadImages */ 
+    function startExperiment(){
+        var subj = prompt("Please enter Subject ID", "s999");
+        subj = subjcheck(subj);
+        jsPsych.data.addProperties({subject: subj});
+        jsPsych.init({
+            experiment_structure: experiment, 
+            /* the below prints the data to the screen */
+            on_finish: function() {
+                //jsPsych.data.displayData('csv');
+                var dat = jsPsych.data.dataAsCSV();
+                var blob = new Blob([dat], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, subj + ".csv");
+             } 
+        });
+    }
+    
+
+    </script>
+</html>

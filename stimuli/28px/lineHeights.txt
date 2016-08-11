@@ -1,0 +1,15 @@
+distance between lines: 160
+A	B	A-B
+141	282	141
+169	225	56
+141	169	28
+197	225	28
+253	282	28
+distance between lines: 160
+reverse
+A	B	A-B
+282	141	141
+225	169	56
+169	141	28
+225	197	28
+282	253	28
